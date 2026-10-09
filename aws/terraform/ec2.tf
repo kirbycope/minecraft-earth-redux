@@ -29,6 +29,16 @@ resource "aws_security_group" "server" {
     protocol    = "tcp"
     cidr_blocks = [var.admin_cidr]
   }
+  dynamic "ingress" {
+    for_each = var.expose_admin_ui ? [1] : []
+    content {
+      description = "Launcher admin UI, admin CIDR only (expose_admin_ui)"
+      from_port   = 5000
+      to_port     = 5000
+      protocol    = "tcp"
+      cidr_blocks = [var.admin_cidr]
+    }
+  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -105,7 +115,15 @@ resource "aws_instance" "server" {
     idle_stop_script  = file("${path.module}/idle-stop.sh")
     server_props_seed = file("${path.module}/../../server/server.properties.seed")
   })
-  user_data_replace_on_change = true
+  # Never let a config edit replace a running server. Replacement deletes the root volume and with it
+  # every player account, inventory and buildplate. Both of these only matter at first boot anyway:
+  # user_data (the bootstrap, which embeds idle-stop.sh) and the "most recent" AMI lookup. A pending
+  # edit to idle-stop.sh once rode along on an unrelated apply and rebuilt the instance from scratch.
+  # To rebuild on purpose: back up first (aws/teardown.sh does), then `terraform taint aws_instance.server`.
+  user_data_replace_on_change = false
+  lifecycle {
+    ignore_changes = [ami, user_data]
+  }
 
   tags = { Name = "${var.project_name}-server" }
 }

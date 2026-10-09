@@ -91,3 +91,11 @@ SSH is allowed only from `admin_cidr`; if your home IP changes, update `terrafor
 server refuses the tunnel: open the game or start the instance, wait about 40 seconds, retry. Admin traffic does
 not count as game traffic for idle-stop, so keep the game open on a phone for a long admin session, or set
 `idle_stop_minutes = 0` while you work and apply.
+
+## Before every apply
+
+Read the plan for the words **must be replaced**. A replaced instance is a new disk: every player account,
+inventory and buildplate is gone. The config now ignores post-creation changes to the AMI and the bootstrap
+(`user_data`), which were the two things that could trigger it, so a routine apply should only ever say
+"change" or "add". To change the bootstrap for a running server, apply the change by hand over SSH. To rebuild
+deliberately, back up with `aws/teardown.sh` first and then `terraform taint aws_instance.server`.

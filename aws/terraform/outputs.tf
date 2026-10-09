@@ -29,3 +29,8 @@ output "launcher_admin_tunnel" {
 output "aws_region" {
   value = var.aws_region
 }
+
+output "admin_ui_url" {
+  description = "Direct address of the launcher admin UI when expose_admin_ui is true (your IP only)."
+  value       = var.expose_admin_ui ? "http://${aws_eip.server.public_ip}:5000" : "not exposed; use launcher_admin_tunnel"
+}

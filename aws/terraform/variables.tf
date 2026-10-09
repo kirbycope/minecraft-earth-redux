@@ -73,3 +73,9 @@ variable "resourcepack_url" {
   type        = string
   default     = "https://github.com/andiricum2/MC-Earth-Resourcepack/releases/download/v1/vanilla.zip"
 }
+
+variable "expose_admin_ui" {
+  description = "Open the launcher admin UI (port 5000) directly to admin_cidr, so it can be used at http://<public_ip>:5000 without an SSH tunnel. Plain HTTP: the login goes over the internet unencrypted, though only your IP can reach it."
+  type        = bool
+  default     = false
+}

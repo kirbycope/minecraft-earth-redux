@@ -74,8 +74,8 @@ resource "aws_lambda_function_url" "waker" {
 # also allows any AWS principal to invoke the function through the Lambda API. Acceptable here:
 # all the function can do is start the instance, which the public URL already allows.
 resource "aws_lambda_permission" "waker_url_invoke" {
-  statement_id             = "FunctionURLInvokeAllowPublicAccess"
-  action                   = "lambda:InvokeFunction"
-  function_name            = aws_lambda_function.waker.function_name
-  principal                = "*"
+  statement_id  = "FunctionURLInvokeAllowPublicAccess"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.waker.function_name
+  principal     = "*"
 }
