@@ -59,3 +59,22 @@ inside the 100 GB free allowance for a handful of players. A 1-year Savings Plan
 - The instance can only stop *itself* (tag-scoped); the Lambda can only start *this* instance.
 - The Function URL is public by design (the game cannot sign requests). It only lives inside your APK; anyone who
   learns it could start your server and cost you compute, not reach anything on it.
+
+## Sunsetting it
+
+`aws/teardown.sh` removes everything this repo created, in the right order, and backs the server up first:
+
+```bash
+aws/teardown.sh --dry-run                 # show the plan, change nothing
+aws/teardown.sh                           # back up to aws/backups/<timestamp>/, then destroy (asks once)
+aws/teardown.sh --remove-deployer         # also delete the IAM deployer user and policy (admin session)
+```
+
+The backup is a tarball of the instance's `data/` (player accounts and inventories in `earth.db`, `live.db`, the
+buildplate object store), the launcher's admin database and config. It matters because the root volume is
+deleted with the instance. The script wakes a sleeping instance to take it.
+
+Three things live outside Terraform and are handled explicitly: the CloudWatch log group Lambda creates on its
+own, the key pair imported before the first apply, and the IAM deployer, which cannot delete itself and so needs
+the admin profile. What the script leaves on purpose: the local Terraform state and the `mce` profile in
+`~/.aws/credentials`; delete those by hand once you are sure.

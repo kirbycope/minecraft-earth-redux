@@ -25,3 +25,4 @@ watchdog/
 __pycache__/
 *.pyc
 out/
+aws/backups/
