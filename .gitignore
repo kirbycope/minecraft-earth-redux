@@ -1,0 +1,24 @@
+# Never commit game binaries, keys, map data, or build output.
+*.apk
+*.ipa
+*.jks
+*.p12
+*.keystore
+*.pbf
+*.osm
+*.mcpack
+vanilla.zip
+Buildplates.zip
+build/
+tmp/
+bin/
+obj/
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!example.tfvars
+crash-*.txt
+.DS_Store
+watchdog/
+.build/

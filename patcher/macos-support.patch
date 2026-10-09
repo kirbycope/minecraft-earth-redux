@@ -1,0 +1,49 @@
+diff --git a/src/Cli/Program.cs b/src/Cli/Program.cs
+index 9962c60..e09cec4 100644
+--- a/src/Cli/Program.cs
++++ b/src/Cli/Program.cs
+@@ -136,6 +136,7 @@ internal class Program
+             {
+                 InApk = inApk.FullName,
+                 OutApk = outApk.FullName,
++                AndroidOSVersion = 16,
+                 ResourcePack = parseResult.GetValue(resourcePackOption)?.FullName,
+                 DecodedDir = parseResult.GetValue(decodedDirOption)?.FullName ?? Path.GetFullPath(Path.Combine("tmp", "apk")),
+                 Patches = parseResult.GetValue(patchesOption) ?? [],
+diff --git a/src/Core/ApkProcessor.cs b/src/Core/ApkProcessor.cs
+index 67ccb1f..6903c95 100644
+--- a/src/Core/ApkProcessor.cs
++++ b/src/Core/ApkProcessor.cs
+@@ -69,7 +69,7 @@ public static class ApkProcessor
+             await DependencyDownloader.Download(BuildTools.DownloadUrl, BuildTools.FileName);
+         }
+ 
+-        if (options.AndroidOSVersion >= 15)
++        if (options.AndroidOSVersion >= 15 && !OperatingSystem.IsMacOS())
+         {
+             await DependencyDownloader.Download(PatchElf.DownloadUrl, PatchElf.FileName);
+         }
+diff --git a/src/Core/PatchElf.cs b/src/Core/PatchElf.cs
+index cf42250..3bc1c1d 100644
+--- a/src/Core/PatchElf.cs
++++ b/src/Core/PatchElf.cs
+@@ -15,9 +15,7 @@ public static class PatchElf
+ 
+     private static readonly string ExtractedDirectory = $"patchelf-{Version}";
+ 
+-    private static readonly string PatchElfPath = OperatingSystem.IsWindows()
+-        ? FileName
+-        : Path.Combine(ExtractedDirectory, "bin", "patchelf");
++    private static readonly string PatchElfPath = OperatingSystem.IsWindows() ? FileName : OperatingSystem.IsMacOS() ? "/opt/homebrew/bin/patchelf" : Path.Combine(ExtractedDirectory, "bin", "patchelf");
+ 
+     private static string DownloadFileName
+     {
+@@ -96,7 +94,7 @@ public static class PatchElf
+ 
+     private static async Task EnsureExtractedAsync(CancellationToken cancellationToken = default)
+     {
+-        if (OperatingSystem.IsWindows())
++        if (OperatingSystem.IsWindows() || OperatingSystem.IsMacOS())
+         {
+             return;
+         }

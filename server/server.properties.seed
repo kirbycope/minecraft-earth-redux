@@ -1,0 +1,5 @@
+# Appended to staticdata/server_template_dir/server.properties before the first run.
+# Solace's one-time Fabric setup run crashes with "Event bus address or queue name was not provided"
+# when these are empty (seen on macOS; harmless to set everywhere). The launcher overrides them on real runs.
+vienna-event-bus-queue-name=setup
+vienna-event-bus-address=localhost:5532
