@@ -10,10 +10,11 @@ stopped and returns the locator pointing at the server's Elastic IP. An on-insta
 `idle_stop_minutes` with no game traffic. The launcher runs with `--start-on-startup`, so every component comes
 back by itself after a wake; nobody has to press Start All.
 
-The one thing this cannot hide: the server takes a moment to boot. Measured on a t4g.large: 34 seconds from the
-locator hit to the API answering (the first boot is longer because it builds Solace and imports tiles; after that
-the disk is warm). So the first launch after a sleep may show "can't connect"; relaunch half a minute later and it
-plays. The game's request timeouts are too short to stall the locator through a boot, so two launches is the floor.
+Measured on a t4g.large with a Galaxy S24 Ultra: 38 seconds from tapping the icon to the API answering, and the
+game got through on that first launch with no error. The locator answers at once, then the client sits on
+"Signing in..." while the server boots, and its sign-in retries outlast the boot. So from the player's side a
+sleeping server just means a longer "Signing in" the first time. (The very first boot of a new instance is longer:
+it builds Solace from source and imports the tiles.)
 
 ## Deploy
 
