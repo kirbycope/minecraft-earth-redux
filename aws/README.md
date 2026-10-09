@@ -37,8 +37,9 @@ terraform apply
 First boot takes several minutes (it builds Solace from source and imports map tiles in the background; watch
 `/var/log/mce-bootstrap.log` and `/var/log/mce-tiles.log`). Then:
 
-1. `terraform output launcher_admin_tunnel`, run it, open http://localhost:5000, register the first account (it
-   becomes owner). No mail server: use the confirm link on the confirmation page, or
+1. `terraform output launcher_admin_tunnel`, run it, open http://localhost:5055 (the UI listens on 5000 on the
+   server; the tunnel uses 5055 locally because macOS AirPlay holds 5000), register the first account (it becomes
+   owner). No mail server: use the confirm link on the confirmation page, or
    `sqlite3 /opt/mce/solace/build/Release/framework-dependent-linux-arm64/launcher/Data/app.db "UPDATE AspNetUsers SET EmailConfirmed=1"`.
 2. `terraform output patch_apk_command`, run it against the original APK, install the result on an arm64 Android phone.
 3. In the game, Register tab, create the player account (lowercase username), play.
@@ -78,3 +79,15 @@ Three things live outside Terraform and are handled explicitly: the CloudWatch l
 own, the key pair imported before the first apply, and the IAM deployer, which cannot delete itself and so needs
 the admin profile. What the script leaves on purpose: the local Terraform state and the `mce` profile in
 `~/.aws/credentials`; delete those by hand once you are sure.
+
+## Reaching the admin UI later
+
+```bash
+ssh -L 5055:localhost:5000 ubuntu@<public_ip>     # keep this open
+open http://localhost:5055
+```
+
+SSH is allowed only from `admin_cidr`; if your home IP changes, update `terraform.tfvars` and apply. A sleeping
+server refuses the tunnel: open the game or start the instance, wait about 40 seconds, retry. Admin traffic does
+not count as game traffic for idle-stop, so keep the game open on a phone for a long admin session, or set
+`idle_stop_minutes = 0` while you work and apply.

@@ -22,8 +22,8 @@ output "ssh" {
 }
 
 output "launcher_admin_tunnel" {
-  description = "The admin UI is not exposed. Tunnel it, then open http://localhost:5000 and register the first (owner) account."
-  value       = "ssh -L 5000:localhost:5000 ubuntu@${aws_eip.server.public_ip}"
+  description = "The admin UI is not exposed. Tunnel it, then open http://localhost:5055 (5055 locally because macOS AirPlay holds 5000) and register the first (owner) account."
+  value       = "ssh -L 5055:localhost:5000 ubuntu@${aws_eip.server.public_ip}"
 }
 
 output "aws_region" {
