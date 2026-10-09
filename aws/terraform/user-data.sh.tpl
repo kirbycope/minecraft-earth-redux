@@ -19,8 +19,11 @@ export DEBIAN_FRONTEND=noninteractive
 
 # --- system packages ---------------------------------------------------------------------
 apt-get update
-apt-get install -y git curl unzip jq libicu74 openjdk-17-jre-headless awscli \
+apt-get install -y git curl unzip jq libicu74 openjdk-17-jre-headless \
   postgresql postgresql-postgis osm2pgsql
+# Ubuntu 24.04 ships awscli only as a snap, so use Amazon's installer (the idle-stop cron needs it)
+curl -sSL https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip -o /tmp/awscliv2.zip
+unzip -q -o /tmp/awscliv2.zip -d /tmp/awscliv2 && /tmp/awscliv2/aws/install --update >/dev/null && rm -rf /tmp/awscliv2 /tmp/awscliv2.zip
 
 # --- .NET 10 (framework-dependent build needs the runtime+SDK) and PowerShell (publish.ps1) ---
 curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh

@@ -10,9 +10,10 @@ stopped and returns the locator pointing at the server's Elastic IP. An on-insta
 `idle_stop_minutes` with no game traffic. The launcher runs with `--start-on-startup`, so every component comes
 back by itself after a wake; nobody has to press Start All.
 
-The one thing this cannot hide: a cold boot takes the server a couple of minutes. The first launch after a sleep
-shows "can't connect"; relaunch after two or three minutes and it plays. The game's request timeouts are too short
-to stall the locator through a boot, so two launches is the floor.
+The one thing this cannot hide: the server takes a moment to boot. Measured on a t4g.large: 34 seconds from the
+locator hit to the API answering (the first boot is longer because it builds Solace and imports tiles; after that
+the disk is warm). So the first launch after a sleep may show "can't connect"; relaunch half a minute later and it
+plays. The game's request timeouts are too short to stall the locator through a boot, so two launches is the floor.
 
 ## Deploy
 

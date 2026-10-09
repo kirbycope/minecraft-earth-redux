@@ -13,6 +13,8 @@ STATE=/var/lib/mce-idle
 mkdir -p "$STATE"
 
 [ "$IDLE_MIN" -gt 0 ] || exit 0
+# never stop under a running first-boot tile import; it does not resume after a reboot
+pgrep -x osm2pgsql >/dev/null && exit 0
 
 active=$(ss -Htan "( sport = :$API_PORT )" | grep -vc LISTEN)
 if [ "$active" -gt 0 ]; then
