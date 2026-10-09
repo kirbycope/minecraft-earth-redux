@@ -16,6 +16,15 @@ to stall the locator through a boot, so two launches is the floor.
 
 ## Deploy
 
+Terraform's AWS provider cannot read an `aws login` session, and nothing should run as the account root anyway, so
+first create the scoped deployer user (once, as an admin). `aws/iam/deployer-policy.json` limits it to this project's
+EC2/IAM/Lambda resources in us-west-2; the script stores its key in a local profile named `mce`:
+
+```bash
+aws/iam/create-deployer.sh
+export AWS_PROFILE=mce
+```
+
 ```bash
 cd aws/terraform
 cp example.tfvars terraform.tfvars   # set ssh_key_name and admin_cidr
