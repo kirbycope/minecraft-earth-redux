@@ -68,12 +68,14 @@ resource "aws_lambda_function_url" "waker" {
   authorization_type = "NONE"
 }
 
-# A Function URL with authorization_type NONE still needs this resource policy, or every call is 403.
-# The console adds it silently; Terraform does not.
-resource "aws_lambda_permission" "waker_public_url" {
-  statement_id           = "AllowPublicFunctionUrl"
-  action                 = "lambda:InvokeFunctionUrl"
-  function_name          = aws_lambda_function.waker.function_name
-  principal              = "*"
-  function_url_auth_type = "NONE"
+# Since October 2025 a public Function URL needs lambda:InvokeFunction as well as the
+# lambda:InvokeFunctionUrl statement the provider adds by itself, or every call is 403.
+# The AWS provider (5.x) has no argument for the lambda:InvokedViaFunctionUrl condition, so this
+# also allows any AWS principal to invoke the function through the Lambda API. Acceptable here:
+# all the function can do is start the instance, which the public URL already allows.
+resource "aws_lambda_permission" "waker_url_invoke" {
+  statement_id             = "FunctionURLInvokeAllowPublicAccess"
+  action                   = "lambda:InvokeFunction"
+  function_name            = aws_lambda_function.waker.function_name
+  principal                = "*"
 }

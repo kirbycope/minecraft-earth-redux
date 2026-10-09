@@ -15,7 +15,10 @@
 # applies macos-support.patch (upstream only ships patchelf for Windows/Linux) and needs `brew install patchelf`.
 # Needs .NET 10 (`dotnet`), Java 17, git. Android 15+ page-size patching is on (AndroidOSVersion=16).
 set -euo pipefail
-src="$1"; out="$2"; api="$3"; locator="${4:-http://$api}"
+# absolute paths: the CLI runs from its own build directory (it resolves Patches/ relative to cwd)
+src="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+mkdir -p "$(dirname "$2")"; out="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
+api="$3"; locator="${4:-http://$api}"
 here="$(cd "$(dirname "$0")" && pwd)"
 commit="$(cat "$here/UPSTREAM_COMMIT")"
 work="$here/build/patcher"
