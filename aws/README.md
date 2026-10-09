@@ -99,3 +99,7 @@ inventory and buildplate is gone. The config now ignores post-creation changes t
 (`user_data`), which were the two things that could trigger it, so a routine apply should only ever say
 "change" or "add". To change the bootstrap for a running server, apply the change by hand over SSH. To rebuild
 deliberately, back up with `aws/teardown.sh` first and then `terraform taint aws_instance.server`.
+
+If the instance does get rebuilt without a restore, every phone that had signed in is refused ("JWT verification
+failed" in the server log) because the token secrets in `data/earth.db` are new. Uninstall the app on each
+phone, reinstall, and register again. Restoring `earth.db` from a backup avoids that.

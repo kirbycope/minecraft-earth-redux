@@ -18,3 +18,8 @@
   that writes anything, including the tooling driving the machine. Import a metro bbox, non-slim, and keep
   headroom. Recovery needed a real terminal: kill osm2pgsql/postgres, remove the cluster, purge snapshots.
 - **Android 15+** needs 16 KB page-size patching of the native libs (the patcher does it with `patchelf`).
+- **A rebuilt server rejects every existing client session.** Solace signs its emulated Xbox/PlayFab tokens with
+  secrets it generates on first run and keeps in `data/earth.db`. A fresh instance has new secrets, so a phone
+  that signed in before shows a login refusal and the server logs `JWT verification failed: IDX10511`. The
+  phone's cached token has to go: uninstall the app (or clear its data), then sign in or register again.
+  Restoring `earth.db` from a backup brings the old secrets back and keeps sessions valid.
