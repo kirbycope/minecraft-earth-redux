@@ -22,3 +22,5 @@ crash-*.txt
 .DS_Store
 watchdog/
 .build/
+__pycache__/
+*.pyc
