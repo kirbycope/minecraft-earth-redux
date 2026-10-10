@@ -1,3 +1,7 @@
+macOS support for the Earth-Restored Minecraft_Earth_Patcher (https://github.com/Earth-Restored/Minecraft_Earth_Patcher),
+against the commit in UPSTREAM_COMMIT. The context lines are that project's code:
+Copyright (c) 2024 BitcoderCZ, MIT License (see LICENSE in that repository). This diff is offered under the same licence.
+
 diff --git a/src/Cli/Program.cs b/src/Cli/Program.cs
 index 9962c60..e09cec4 100644
 --- a/src/Cli/Program.cs
