@@ -26,3 +26,6 @@ __pycache__/
 *.pyc
 out/
 aws/backups/
+# Terraform plan files embed the full state (account IDs, IPs, endpoints).
+tfplan
+*.tfplan
